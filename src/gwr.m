@@ -1,4 +1,4 @@
-function A = gwr(data)
+function [A,C] = gwr(data)
 
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -50,7 +50,7 @@ r = 3; %the first point to be added is the point 3 because we already have n1 an
 h = zeros(1,maxnodes);%firing counter matrix
 
 % crazy idea: go through the dataset twice... it makes it a lot better
-for aaaaaaaaa = 1:2
+for aaaaaaaaa = 1:40
 
 % start of the loop
 for k = 1:size(data,2) %step 1
@@ -104,8 +104,8 @@ for k = 1:size(data,2) %step 1
     [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     
     %figure(1)
-    plotgwr(A, C)
-    drawnow
+    %plotgwr(A, C)
+    %drawnow
     %figure(2)
     %plotgng(A,C,'n')
     %drawnow
