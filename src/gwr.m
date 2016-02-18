@@ -1,8 +1,10 @@
 function A = gwr(data)
 
 %cf parisi, 2015 and cf marsland, 2002
+%based on the GNG algorithm from the guy that did the GNG algorithm for
+%matlab
 
-% some differences:
+% some tiny differences:
 % in the 2002 paper, they want to show the learning of topologies ability
 % of the GWR algorithm, which is not our main goal. In this sense they have
 % a function that can generate new points as pleased p(eta). This is not
@@ -13,7 +15,7 @@ function A = gwr(data)
 
 %the initial parameters for the algorithm:
 global maxnodes at en eb h0 ab an tb tn amax
-maxnodes = 100; %maximum number of nodes/neurons in the gas
+maxnodes = 1000; %maximum number of nodes/neurons in the gas
 at = 0.95; %activity threshold
 en = 0.006; %epsilon subscript n
 eb = 0.2; %epsilon subscript b
@@ -25,7 +27,7 @@ tn = 3.33;
 amax = 50; %greatest allowed age
 t0 = cputime; % my algorithm is not necessarily static!
 
-time = 0;
+time = 0; %but it is static...
 
 
 %test some algorithm conditions:
@@ -35,7 +37,6 @@ end
 % (1)
 % pick n1 and n2 from data
 n = randperm(length(data),2);
-%n = datasample(data,2,2);
 n1 = data(:,n(1)); n2 = data(:,n(2));
 
 A = [n1, n2];
@@ -48,7 +49,7 @@ C_age = C;
 r = 3; %the first point to be added is the point 3 because we already have n1 and n2
 h = zeros(1,maxnodes);%firing counter matrix
 
-% crazy idea: go through the dataset twice
+% crazy idea: go through the dataset twice... it makes it a lot better
 for aaaaaaaaa = 1:2
 
 % start of the loop
@@ -93,7 +94,7 @@ for k = 1:size(data,2) %step 1
           
     %step 9: again we do it inverted, for loop first
     for i = 1:size(A,2)
-        h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time??? should I respect these people?
+        h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time
     end
     h(s) = hs(time);
     %step 10: check if a node has no edges and delete them
@@ -107,6 +108,7 @@ for k = 1:size(data,2) %step 1
     drawnow
     %figure(2)
     %plotgng(A,C,'n')
+    %drawnow
 end
 end
 end

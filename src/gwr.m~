@@ -1,8 +1,10 @@
 function A = gwr(data)
 
 %cf parisi, 2015 and cf marsland, 2002
+%based on the GNG algorithm from the guy that did the GNG algorithm for
+%matlab
 
-% some differences:
+% some tiny differences:
 % in the 2002 paper, they want to show the learning of topologies ability
 % of the GWR algorithm, which is not our main goal. In this sense they have
 % a function that can generate new points as pleased p(eta). This is not
@@ -25,7 +27,7 @@ tn = 3.33;
 amax = 50; %greatest allowed age
 t0 = cputime; % my algorithm is not necessarily static!
 
-time = 0;
+time = 0; %but it is stati
 
 
 %test some algorithm conditions:
@@ -34,8 +36,9 @@ if ~(0 < en || en < eb || eb < 1)
 end
 % (1)
 % pick n1 and n2 from data
-n = datasample(data,2,2);
-n1 = n(:,1); n2 = n(:,2);
+n = randperm(length(data),2);
+%n = datasample(data,2,2);
+n1 = data(:,n(1)); n2 = data(:,n(2));
 
 A = [n1, n2];
 % (2)
@@ -101,7 +104,11 @@ for k = 1:size(data,2) %step 1
     [C, C_age ] = removeedge(C, C_age);  
     [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     
-    %plotgwr(A, C)
+    %figure(1)
+    plotgwr(A, C)
+    drawnow
+    %figure(2)
+    %plotgng(A,C,'n')
     %drawnow
 end
 end
