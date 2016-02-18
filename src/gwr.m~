@@ -101,11 +101,8 @@ for k = 1:size(data,2) %step 1
     [C, C_age ] = removeedge(C, C_age);  
     [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     
-    %figure(1)
-    plotgwr(A, C)
-    drawnow
-    %figure(2)
-    %plotgng(A,C,'n')
+    %plotgwr(A, C)
+    %drawnow
 end
 end
 end
