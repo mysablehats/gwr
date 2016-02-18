@@ -1,5 +1,5 @@
 function [n1 n2 ni1 ni2 distvector] = findnearest(p, data)
-    maxindex = length(data);
+    maxindex = size(data,2);
     distvector = zeros(1,maxindex);
     for i = 1:maxindex
         distvector(i) = norm(data(:,i)- p);

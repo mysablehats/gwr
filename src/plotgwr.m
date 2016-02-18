@@ -13,7 +13,7 @@ Y = reshape([ay;by;NaN*ones(size(ax))],size(ax,2)*3,1)';
 %Y = [A(2,row);A(2,col)];
 
 plot(X,Y, 'b')
-axis([0 10 0 10])
+%axis([0 10 0 10])
 set(gca,'box','off')
 %disp(strcat('plotgwr time: '
 %toc% ))
