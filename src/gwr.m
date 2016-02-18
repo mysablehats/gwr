@@ -34,8 +34,9 @@ if ~(0 < en || en < eb || eb < 1)
 end
 % (1)
 % pick n1 and n2 from data
-n = datasample(data,2,2);
-n1 = n(:,1); n2 = n(:,2);
+n = randperm(length(data),2);
+%n = datasample(data,2,2);
+n1 = data(:,n(1)); n2 = data(:,n(2));
 
 A = [n1, n2];
 % (2)
