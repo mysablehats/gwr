@@ -49,11 +49,17 @@ C_age = C;
 r = 3; %the first point to be added is the point 3 because we already have n1 and n2
 h = zeros(1,maxnodes);%firing counter matrix
 
+%some variables to display the graphs
+activations = [];
+nodecount = [];
+epoch = 1;
+
 % crazy idea: go through the dataset twice... it makes it a lot better
-for aaaaaaaaa = 1:2
+for aaaaaaaaa = 1:1%2
 
 % start of the loop
 for k = 1:size(data,2) %step 1
+    %tic
     %time = (cputime - t0)*1; %uncomment this if you want it to deal with changing input 
     eta = data(:,k); % this the k-th data sample
     [ws wt s t distance] = findnearest(eta, A); %step 2 and 3
@@ -103,9 +109,27 @@ for k = 1:size(data,2) %step 1
     [C, C_age ] = removeedge(C, C_age);  
     [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     
-    plotgwr(A, C)
-    drawnow
     
+    %to make it look nice...
+%     activations = [activations a];
+%     nodecount = [nodecount r];
+%     subplot(2,2,[1 3]) 
+%    
+%     plotgwr(A, C)
+%     title('GWR 2 first dimensions')   
+%     subplot(2,2,2)
+%     plot(1:epoch,nodecount)
+%     title('Num of nodes')
+%     subplot(2,2,4)
+%     if length(activations)>200 && mean(activations(end-40:end))> 0.7
+%         plot((epoch-200):epoch, activations(end-200:end))
+%     else
+%         semilogy(1:epoch,activations)
+%     end
+%     title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
+%     drawnow
+    epoch = epoch+1;   
+    progress(epoch,31000)
 end
 end
 end
