@@ -14,7 +14,7 @@ function [A,C] = gwr(data)
 % something that yields a constant value
 
 %the initial parameters for the algorithm:
-global maxnodes at en eb h0 ab an tb tn amax
+global maxnodes at en eb h0 ab an tb tn amax STATIC
 maxnodes = 1000; %maximum number of nodes/neurons in the gas
 at = 0.95; %activity threshold
 en = 0.006; %epsilon subscript n
@@ -26,8 +26,9 @@ tb = 3.33;
 tn = 3.33;
 amax = 50; %greatest allowed age
 t0 = cputime; % my algorithm is not necessarily static!
-
-time = 0; %but it is static...
+STATIC = true;
+%%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE!!!!!!! GWR NOT
+%%%%%%%%%%%%%%%%%%% IMPLEMENTED AS IT SHOULD!!!!!!
 
 
 %test some algorithm conditions:
@@ -54,13 +55,19 @@ activations = [];
 nodecount = [];
 epoch = 1;
 
+%%% SPEEDUP CHANGE
+if STATIC
+    hizero = h(0)*ones(1,maxnodes);
+    hszero = hs(0);
+end
+
 % crazy idea: go through the dataset twice... it makes it a lot better
 for aaaaaaaaa = 1:1%2
 
 % start of the loop
 for k = 1:size(data,2) %step 1
     %tic
-    %time = (cputime - t0)*1; %uncomment this if you want it to deal with changing input 
+   
     eta = data(:,k); % this the k-th data sample
     [ws wt s t distance] = findnearest(eta, A); %step 2 and 3
     if C(s,t)==0 %step 4
@@ -99,10 +106,18 @@ for k = 1:size(data,2) %step 1
     end
           
     %step 9: again we do it inverted, for loop first
-    for i = 1:size(A,2)
-        h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time
-    end
-    h(s) = hs(time);
+    %%%% this strange check is a speedup for the case when the algorithm is static
+    if STATIC % skips this if algorithm is static
+        h = hizero;
+        h(s) = hszero;
+    else
+        for i = 1:size(A,2)
+            h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time
+        end
+        h(s) = hs(time);
+        time = (cputime - t0)*1; 
+    end    
+   
     %step 10: check if a node has no edges and delete them
     %[C, A, C_age, h, r ] = removenode(C, A, C_age, h, r); 
     %check for old edges
