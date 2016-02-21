@@ -1,4 +1,4 @@
-function [A,C] = gwr(data)
+function [A,C,ni1,ni2] = gwr(data)
 
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -38,7 +38,12 @@ end
 % (1)
 % pick n1 and n2 from data
 n = randperm(length(data),2);
+ni1 = n(1);
+ni2 = n(2);
 n1 = data(:,n(1)); n2 = data(:,n(2));
+%n1 = 1;
+%n2 = 2;
+disp(strcat('n1 = ',num2str(ni1),' n2 = ',num2str(ni2)))
 
 A = [n1, n2];
 % (2)
@@ -57,8 +62,10 @@ epoch = 1;
 
 %%% SPEEDUP CHANGE
 if STATIC
-    hizero = h(0)*ones(1,maxnodes);
+    hizero = hi(0)*ones(1,maxnodes);
     hszero = hs(0);
+else
+    time = 0;
 end
 
 % crazy idea: go through the dataset twice... it makes it a lot better
@@ -144,7 +151,7 @@ for k = 1:size(data,2) %step 1
 %     title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
 %     drawnow
     epoch = epoch+1;   
-    progress(epoch,31000)
+    %progress(epoch,31000)
 end
 end
 end
