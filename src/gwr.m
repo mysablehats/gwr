@@ -38,14 +38,15 @@ end
 % (1)
 % pick n1 and n2 from data
 n = randperm(length(data),2);
-ni1 = n(1);
-ni2 = n(2);
+ni1 = 1; %n(1);
+ni2 = 2; %n(2);
 n1 = data(:,n(1)); n2 = data(:,n(2));
 %n1 = 1;
 %n2 = 2;
 disp(strcat('n1 = ',num2str(ni1),' n2 = ',num2str(ni2)))
 
-A = [n1, n2];
+A = zeros(size(n1,1),maxnodes);
+A(:,[1 2]) = [n1, n2];
 % (2)
 % initialize empty set C
 
@@ -69,7 +70,7 @@ else
 end
 
 % crazy idea: go through the dataset twice... it makes it a lot better
-for aaaaaaaaa = 1:1%2
+for aaaaaaaaa = 1:2
 
 % start of the loop
 for k = 1:size(data,2) %step 1
@@ -87,16 +88,17 @@ for k = 1:size(data,2) %step 1
     %algorithm has some issues, so here I will calculate the neighbours of
     %s
     [neighbours] = findneighbours(s, C);
+    num_of_neighbours = size(neighbours,2);
     
     if a < at && r <= maxnodes %step 6
         wr = 0.5*(ws+eta); %too low activity, needs to create new node r
-        A = [A wr];
+        A(:,r) = wr;
         C = spdi_bind(C,t,r);
         C = spdi_bind(C,s,r);
         C = spdi_del(C,s,t);
         r = r+1;
     else %step 7
-        for j = 1:size(neighbours,2) % check this for possible indexing errors
+        for j = 1:num_of_neighbours % check this for possible indexing errors
             i = neighbours(j);
             %size(A)
             wi = A(:,i);
@@ -107,7 +109,7 @@ for k = 1:size(data,2) %step 1
     %step 8 : age edges with end at s
     %first we need to find if the edges connect to s
     
-    for j = 1:size(neighbours,2) % check this for possible indexing errors
+    for j = 1:num_of_neighbours % check this for possible indexing errors
             i = neighbours(j);
             C_age = spdi_add(C_age,s,i);
     end
@@ -118,7 +120,7 @@ for k = 1:size(data,2) %step 1
         h = hizero;
         h(s) = hszero;
     else
-        for i = 1:size(A,2) %%% since this value is the same for all I can compute it once and then make all the array have the same value...
+        for i = 1:r %%% since this value is the same for all I can compute it once and then make all the array have the same value...
             h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time
         end
         h(s) = hs(time);
@@ -133,23 +135,23 @@ for k = 1:size(data,2) %step 1
     
     
     %to make it look nice...
-%     activations = [activations a];
-%     nodecount = [nodecount r];
-%     subplot(2,2,[1 3]) 
-%    
-%     plotgwr(A, C)
-%     title('GWR 2 first dimensions')   
-%     subplot(2,2,2)
-%     plot(1:epoch,nodecount)
-%     title('Num of nodes')
-%     subplot(2,2,4)
-%     if length(activations)>200 && mean(activations(end-40:end))> 0.7
-%         plot((epoch-200):epoch, activations(end-200:end))
-%     else
-%         semilogy(1:epoch,activations)
-%     end
-%     title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
-%     drawnow
+    activations = [activations a];
+    nodecount = [nodecount r];
+    subplot(2,2,[1 3]) 
+   
+    plotgwr(A, C)
+    title('GWR 2 first dimensions')   
+    subplot(2,2,2)
+    plot(1:epoch,nodecount)
+    title('Num of nodes')
+    subplot(2,2,4)
+    if length(activations)>200 && mean(activations(end-40:end))> 0.7
+        plot((epoch-200):epoch, activations(end-200:end))
+    else
+        semilogy(1:epoch,activations)
+    end
+    title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
+    drawnow
     epoch = epoch+1;   
     %progress(epoch,31000)
 end

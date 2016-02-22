@@ -9,7 +9,9 @@ if ~isempty(row)
             break
         end
         C_age(row(i),col(i)) = 0;
+        C_age(col(i),row(i)) = 0;
         C(row(i),col(i)) = 0;
+        C(col(i),row(i)) = 0;
     end
 end
 end
