@@ -15,7 +15,7 @@ for i = 1:maxa% r
         if i>size(A,2)
             disp('wrong stuff going on')
         end
-        A(:,i) = []; % A is a different guy
+        A = clipA(A,i); 
         C_age = clipsimmat(C_age,i);
         h = clipvect(h,i);
         r = r-1;
@@ -35,4 +35,10 @@ function V = clipvect(V, i)
 V(i) = [];
 V = [V 0];
 end
+function A = clipA(A, i)
+A(:,i) = [];
+ZERO = zeros(size(A,1),1);
+A = [A ZERO];
+end
+
 
