@@ -14,7 +14,7 @@ function [A,C,ni1,ni2] = gwr(data)
 % something that yields a constant value
 
 %the initial parameters for the algorithm:
-global maxnodes at en eb h0 ab an tb tn amax STATIC
+global maxnodes at en eb h0 ab an tb tn amax
 maxnodes = 100; %maximum number of nodes/neurons in the gas
 at = 0.95; %activity threshold
 en = 0.006; %epsilon subscript n
@@ -27,6 +27,8 @@ tn = 3.33;
 amax = 50; %greatest allowed age
 t0 = cputime; % my algorithm is not necessarily static!
 STATIC = true;
+PLOTIT = false;
+DOOVER = 2; % this means data will be run over twice
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE!!!!!!! GWR NOT
 %%%%%%%%%%%%%%%%%%% IMPLEMENTED AS IT SHOULD!!!!!!
 
@@ -55,6 +57,7 @@ C_age = C;
 
 r = 3; %the first point to be added is the point 3 because we already have n1 and n2
 h = zeros(1,maxnodes);%firing counter matrix
+datasetsize = size(data,2);
 
 %some variables to display the graphs
 activations = [];
@@ -70,10 +73,10 @@ else
 end
 
 % crazy idea: go through the dataset twice... it makes it a lot better
-for aaaaaaaaa = 1:2
+for aaaaaaaaa = 1:DOOVER
 
 % start of the loop
-for k = 1:size(data,2) %step 1
+for k = 1:datasetsize %step 1
     %tic
    
     eta = data(:,k); % this the k-th data sample
@@ -135,25 +138,27 @@ for k = 1:size(data,2) %step 1
     
     
     %to make it look nice...
-    activations = [activations a];
-    nodecount = [nodecount r];
-    subplot(2,2,[1 3]) 
-   
-    plotgwr(A, C)
-    title('GWR 2 first dimensions')   
-    subplot(2,2,2)
-    plot(1:epoch,nodecount)
-    title('Num of nodes')
-    subplot(2,2,4)
-    if length(activations)>200 && mean(activations(end-40:end))> 0.7
-        plot((epoch-200):epoch, activations(end-200:end))
-    else
-        semilogy(1:epoch,activations)
+    if PLOTIT
+        activations = [activations a];
+        nodecount = [nodecount r];
+        subplot(2,2,[1 3]) 
+
+        plotgwr(A, C)
+        title('GWR 2 first dimensions')   
+        subplot(2,2,2)
+        plot(1:epoch,nodecount)
+        title('Num of nodes')
+        subplot(2,2,4)
+        if length(activations)>200 && mean(activations(end-40:end))> 0.7
+            plot((epoch-200):epoch, activations(end-200:end))
+        else
+            semilogy(1:epoch,activations)
+        end
+        title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
+        drawnow
     end
-    title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
-    drawnow
     epoch = epoch+1;   
-    %progress(epoch,31000)
+    progress(epoch,datasetsize*DOOVER)
 end
 end
 end
