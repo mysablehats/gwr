@@ -15,7 +15,7 @@ function [A,C,ni1,ni2] = gwr(data)
 
 %the initial parameters for the algorithm:
 global maxnodes at en eb h0 ab an tb tn amax STATIC
-maxnodes = 1000; %maximum number of nodes/neurons in the gas
+maxnodes = 100; %maximum number of nodes/neurons in the gas
 at = 0.95; %activity threshold
 en = 0.006; %epsilon subscript n
 eb = 0.2; %epsilon subscript b
@@ -76,7 +76,7 @@ for k = 1:size(data,2) %step 1
     %tic
    
     eta = data(:,k); % this the k-th data sample
-    [ws wt s t distance] = findnearest(eta, A); %step 2 and 3
+    [ws, ~, s, t, ~] = findnearest(eta, A); %step 2 and 3
     if C(s,t)==0 %step 4
         C = spdi_bind(C,s,t);
     else
@@ -118,7 +118,7 @@ for k = 1:size(data,2) %step 1
         h = hizero;
         h(s) = hszero;
     else
-        for i = 1:size(A,2)
+        for i = 1:size(A,2) %%% since this value is the same for all I can compute it once and then make all the array have the same value...
             h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time
         end
         h(s) = hs(time);
