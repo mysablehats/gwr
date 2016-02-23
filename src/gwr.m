@@ -1,4 +1,6 @@
-function [A,C,ni1,ni2] = gwr(data)
+function [A,C,ni1,ni2] = gwr(data,MAXNUMBEROFNODES)
+
+disp(strcat('Executing GWR with: ', num2str(MAXNUMBEROFNODES),' nodes.'))
 
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -15,7 +17,9 @@ function [A,C,ni1,ni2] = gwr(data)
 
 %the initial parameters for the algorithm:
 global maxnodes at en eb h0 ab an tb tn amax
-maxnodes = 100; %maximum number of nodes/neurons in the gas
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+maxnodes = MAXNUMBEROFNODES; %maximum number of nodes/neurons in the gas
 at = 0.95; %activity threshold
 en = 0.006; %epsilon subscript n
 eb = 0.2; %epsilon subscript b
@@ -25,12 +29,15 @@ an = 0.95;
 tb = 3.33;
 tn = 3.33;
 amax = 50; %greatest allowed age
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
 STATIC = true;
-PLOTIT = false;
+PLOTIT = true;
 DOOVER = 2; % this means data will be run over twice
-%%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE!!!!!!! GWR NOT
-%%%%%%%%%%%%%%%%%%% IMPLEMENTED AS IT SHOULD!!!!!!
+%%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
+%%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
+%%%%%%%%%%%%%%%%%%% 
 
 
 %test some algorithm conditions:
@@ -39,7 +46,7 @@ if ~(0 < en || en < eb || eb < 1)
 end
 % (1)
 % pick n1 and n2 from data
-n = randperm(length(data),2);
+n = randperm(size(data,2),2);
 ni1 = 1; %n(1);
 ni2 = 2; %n(2);
 n1 = data(:,n(1)); n2 = data(:,n(2));
@@ -144,12 +151,12 @@ for k = 1:datasetsize %step 1
         subplot(2,2,[1 3]) 
 
         plotgwr(A, C)
-        title('GWR 2 first dimensions')   
+        title('GWR')   
         subplot(2,2,2)
         plot(1:epoch,nodecount)
         title('Num of nodes')
         subplot(2,2,4)
-        if length(activations)>200 && mean(activations(end-40:end))> 0.7
+        if length(activations)>200 & mean(activations(end-40:end))> 0.7
             plot((epoch-200):epoch, activations(end-200:end))
         else
             semilogy(1:epoch,activations)
