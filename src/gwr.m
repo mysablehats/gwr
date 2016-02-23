@@ -35,6 +35,7 @@ t0 = cputime; % my algorithm is not necessarily static!
 PLOTIT = false;
 DOOVER = 2; % this means data will be run over twice
 STATIC = true;
+RANDOMSTART = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -46,16 +47,19 @@ if ~(0 < en || en < eb || eb < 1)
 end
 % (1)
 % pick n1 and n2 from data
-n = randperm(size(data,2),2);
-ni1 = 1; %n(1);
-ni2 = 2; %n(2);
+ni1 = 1; 
+ni2 = 2; 
+if RANDOMSTART
+    n = randperm(size(data,2),2);
+    ni1 = n(1);
+    ni2 = n(2);
+end
 n1 = data(:,ni1); n2 = data(:,ni2);
-%n1 = 1;
-%n2 = 2;
-disp(strcat('n1 = ',num2str(ni1),' n2 = ',num2str(ni2)))
+disp(strcat('n1 =  ',num2str(ni1),' n2 =  ',num2str(ni2)))
 
 A = zeros(size(n1,1),maxnodes);
 A(:,[1 2]) = [n1, n2];
+A(1:10,[1 2])
 % (2)
 % initialize empty set C
 
