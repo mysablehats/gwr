@@ -32,9 +32,9 @@ amax = 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
-STATIC = true;
-PLOTIT = true;
+PLOTIT = false;
 DOOVER = 2; % this means data will be run over twice
+STATIC = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -49,7 +49,7 @@ end
 n = randperm(size(data,2),2);
 ni1 = 1; %n(1);
 ni2 = 2; %n(2);
-n1 = data(:,n(1)); n2 = data(:,n(2));
+n1 = data(:,ni1); n2 = data(:,ni2);
 %n1 = 1;
 %n2 = 2;
 disp(strcat('n1 = ',num2str(ni1),' n2 = ',num2str(ni2)))
@@ -84,8 +84,6 @@ for aaaaaaaaa = 1:DOOVER
 
 % start of the loop
 for k = 1:datasetsize %step 1
-    %tic
-   
     eta = data(:,k); % this the k-th data sample
     [ws, ~, s, t, ~] = findnearest(eta, A); %step 2 and 3
     if C(s,t)==0 %step 4
@@ -143,10 +141,10 @@ for k = 1:datasetsize %step 1
     [C, C_age ] = removeedge(C, C_age);  
     [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     
-    
+    activations = [activations a];
     %to make it look nice...
     if PLOTIT
-        activations = [activations a];
+        
         nodecount = [nodecount r];
         subplot(2,2,[1 3]) 
 
@@ -168,6 +166,7 @@ for k = 1:datasetsize %step 1
     progress(epoch,datasetsize*DOOVER)
 end
 end
+disp(strcat('Mean end activation = ',num2str(mean(activations(end-40:end)))))
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
 sparsemat(a,b) = sparsemat(a,b) + 1; 
