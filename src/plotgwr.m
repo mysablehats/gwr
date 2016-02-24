@@ -1,6 +1,8 @@
 function plotgwr(A,C)
-%tic
-% find size of A, since now it is also fixed to maxnodes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%MESSAGES PART
+dbgmsg('Plots gwr (or gng as well). Either in 2 or 3 dimensions. Handles 75 dimension and 72 dimension skeletons gracefully')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 [row,col] = find(C);

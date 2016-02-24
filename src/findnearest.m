@@ -1,10 +1,10 @@
-function [n1 n2 ni1 ni2 distvector] = findnearest(p, data)
+function [n1, n2, ni1, ni2, distvector] = findnearest(p, data)
     maxindex = size(data,2);
     distvector = zeros(1,maxindex);
     for i = 1:maxindex
         distvector(i) = norm(data(:,i)- p);
     end
-    [sorted_distances index] = sort(distvector);
+    [~, index] = sort(distvector);
     ni1 = index(1);
     ni2 = index(2);
     n1 = data(:,ni1);

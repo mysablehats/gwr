@@ -1,7 +1,5 @@
 function [A,C,ni1,ni2] = gwr(data,MAXNUMBEROFNODES)
-
-disp(strcat('Executing GWR with: ', num2str(MAXNUMBEROFNODES),' nodes.'))
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
 %matlab
@@ -35,10 +33,15 @@ t0 = cputime; % my algorithm is not necessarily static!
 PLOTIT = false;
 DOOVER = 2; % this means data will be run over twice
 STATIC = true;
-RANDOMSTART = true;
+RANDOMSTART = false;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%MESSAGES PART%%%%%%%%%%%%%%%%%%%%%%%%%%
+dbgmsg('generates GWR A and C matrices',true)
+dbgmsg('Executing GWR with: ', num2str(MAXNUMBEROFNODES),' nodes.',true)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %test some algorithm conditions:
@@ -55,11 +58,11 @@ if RANDOMSTART
     ni2 = n(2);
 end
 n1 = data(:,ni1); n2 = data(:,ni2);
-disp(strcat('n1 =  ',num2str(ni1),' n2 =  ',num2str(ni2)))
+dbgmsg('Initial parameters ','n1 =  ',num2str(ni1),' n2 =  ',num2str(ni2),true)
 
 A = zeros(size(n1,1),maxnodes);
 A(:,[1 2]) = [n1, n2];
-A(1:10,[1 2])
+
 % (2)
 % initialize empty set C
 
@@ -167,10 +170,12 @@ for k = 1:datasetsize %step 1
         drawnow
     end
     epoch = epoch+1;   
-    progress(epoch,datasetsize*DOOVER)
+    %progress(epoch,1,datasetsize*DOOVER)
 end
 end
-disp(strcat('Mean end activation = ',num2str(mean(activations(end-40:end)))))
+dbgmsg('Mean end activation = ',num2str(mean(activations(end-40:end))),1)
+dbgmsg('Activation end points ',num2str((activations(end-20:end))),1)
+dbgmsg('Activation initial points',num2str(mean(activations(1:20))),1)
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
 sparsemat(a,b) = sparsemat(a,b) + 1; 
