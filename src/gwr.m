@@ -33,7 +33,7 @@ t0 = cputime; % my algorithm is not necessarily static!
 PLOTIT = false;
 DOOVER = 2; % this means data will be run over twice
 STATIC = true;
-RANDOMSTART = false;
+RANDOMSTART = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -41,6 +41,20 @@ RANDOMSTART = false;
 %%%%%%%%%%MESSAGES PART%%%%%%%%%%%%%%%%%%%%%%%%%%
 dbgmsg('generates GWR A and C matrices',true)
 dbgmsg('Executing GWR with: ', num2str(MAXNUMBEROFNODES),' nodes.',true)
+if PLOTIT 
+    dbgmsg('WARNING: Plot ON, this is very slow',true)
+end
+if RANDOMSTART
+    dbgmsg('Executing with random nodes.',true)
+end
+if STATIC
+    dbgmsg('Algorithm set as STATIC',true)
+else
+    dbgmsg('WARNING: Algorithm set as NOT - STATIC',true)
+end
+if DOOVER ~= 1
+    dbgmsg('WARNING:DOVER parameter set to',' ', num2str(DOOVER),'. Will go over whole dataset',' ', num2str(DOOVER),' times.',true)
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -175,7 +189,7 @@ end
 end
 dbgmsg('Mean end activation = ',num2str(mean(activations(end-40:end))),1)
 dbgmsg('Activation end points ',num2str((activations(end-20:end))),1)
-dbgmsg('Activation initial points',num2str(mean(activations(1:20))),1)
+dbgmsg('Activation initial points',num2str(activations(1:20)),1)
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
 sparsemat(a,b) = sparsemat(a,b) + 1; 

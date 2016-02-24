@@ -4,6 +4,11 @@ function plotgwr(A,C)
 dbgmsg('Plots gwr (or gng as well). Either in 2 or 3 dimensions. Handles 75 dimension and 72 dimension skeletons gracefully')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%hack to plot 147 dimension vector. I will just discard
+%%%%%%%%%%%%%velocity information
+if size(A,1) == 147 || size(A,1) == 150
+    A = rebuild(A);
+end
 
 [row,col] = find(C);
 ax = A(1,row);
@@ -66,4 +71,18 @@ else
     plot(X,Y, 'b')    
 end
 set(gca,'box','off')
+end
+function A = rebuild(A) %it should work with all the Nx3 stuff I have, but who knows...
+a = size(A,1)/3;
+c = size(A,2);
+ 
+B = reshape(A,a,3,c); %%%after I will have to put it back as a normal skeleton
+
+if a == 49
+    A = B(1:24,:,:);
+    A = reshape(A,72,c);
+else
+    error('not implemented for this size')
+end
+ 
 end
