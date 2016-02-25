@@ -30,7 +30,7 @@ amax = 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
-PLOTIT = false;
+PLOTIT = true;
 DOOVER = 2; % this means data will be run over twice
 STATIC = true;
 RANDOMSTART = true;
@@ -164,24 +164,25 @@ for k = 1:datasetsize %step 1
     
     activations = [activations a];
     %to make it look nice...
-    if PLOTIT
+    if PLOTIT 
         
         nodecount = [nodecount r];
-        subplot(2,2,[1 3]) 
-
-        plotgwr(A, C)
-        title('GWR')   
-        subplot(2,2,2)
-        plot(1:epoch,nodecount)
-        title('Num of nodes')
-        subplot(2,2,4)
-        if length(activations)>200 & mean(activations(end-40:end))> 0.7
-            plot((epoch-200):epoch, activations(end-200:end))
-        else
-            semilogy(1:epoch,activations)
+        if mod(epoch,10)==0
+            %subplot(2,2,[1 3])
+            plotgwr(A, C)
+            title('GWR')
+%             subplot(2,2,2)
+%             plot(1:epoch,nodecount)
+%             title('Num of nodes')
+%             subplot(2,2,4)
+%             if length(activations)>200 & mean(activations(end-40:end))> 0.7
+%                 plot((epoch-200):epoch, activations(end-200:end))
+%             else
+%                 semilogy(1:epoch,activations)
+%             end
+%             title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
+            drawnow
         end
-        title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
-        drawnow
     end
     epoch = epoch+1;   
     %progress(epoch,1,datasetsize*DOOVER)
