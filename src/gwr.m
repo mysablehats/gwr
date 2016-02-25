@@ -31,7 +31,7 @@ amax = 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
 PLOTIT = true;
-DOOVER = 2; % this means data will be run over twice
+DOOVER = 10; % this means data will be run over twice
 STATIC = true;
 RANDOMSTART = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
@@ -103,8 +103,14 @@ end
 % crazy idea: go through the dataset twice... it makes it a lot better
 for aaaaaaaaa = 1:DOOVER
 
+%crazy idea number 2: break the data set into pieces to see it 
+%unroll look
+bloco = 10;
+for kkk = 0:bloco:(datasetsize-bloco)
+    fgt = (kkk+1):(kkk+bloco);
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%surrogateA = 
 % start of the loop
-for k = 1:datasetsize %step 1
+for k = fgt %datasetsize %step 1
     eta = data(:,k); % this the k-th data sample
     [ws, ~, s, t, ~] = findnearest(eta, A); %step 2 and 3
     if C(s,t)==0 %step 4
@@ -186,6 +192,7 @@ for k = 1:datasetsize %step 1
     end
     epoch = epoch+1;   
     %progress(epoch,1,datasetsize*DOOVER)
+end
 end
 end
 dbgmsg('Mean end activation = ',num2str(mean(activations(end-40:end))),1)
