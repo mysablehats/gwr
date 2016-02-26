@@ -187,9 +187,15 @@ for k = 1:datasetsize %step 1
     %progress(epoch,1,datasetsize*DOOVER)
 end
 end
-dbgmsg('Mean end activation = ',num2str(mean(activations(end-40:end))),1)
-dbgmsg('Activation end points ',num2str((activations(end-20:end))),1)
-dbgmsg('Activation initial points',num2str(activations(1:20)),1)
+if length(activations)>40
+    dbgmsg('Mean end activation = ',num2str(mean(activations(end-40:end))),1)
+    dbgmsg('Activation end points ',num2str((activations(end-20:end))),1)
+    dbgmsg('Activation initial points',num2str(activations(1:20)),1)
+else
+    dbgmsg('Mean activation = ',num2str(mean(activations)),1)
+    dbgmsg('Activation end points ',num2str((activations(end:1))),1)
+    dbgmsg('Activation initial points',num2str(activations),1)
+end
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
 sparsemat(a,b) = sparsemat(a,b) + 1; 
