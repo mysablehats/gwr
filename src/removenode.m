@@ -19,6 +19,9 @@ for i = 1:maxa% r
         C_age = clipsimmat(C_age,i);
         h = clipvect(h,i);
         r = r-1;
+        if r<1||r~=fix(r)
+            error('something fishy happening. r is either zero or fractionary!')
+        end
     end
    
 end
