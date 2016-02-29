@@ -30,8 +30,13 @@ amax = 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
+<<<<<<< Updated upstream
 PLOTIT = false;
 DOOVER = 1; % this means data will be run over twice
+=======
+PLOTIT = true;
+DOOVER = 2; % this means data will be run over twice
+>>>>>>> Stashed changes
 STATIC = true;
 RANDOMSTART = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
@@ -112,7 +117,7 @@ for k = 1:datasetsize %step 1
     else
         C_age = spdi_del(C_age,s,t);
     end
-    a = exp(-norm(eta-ws)); %step 5
+    a = exp(-norm(eta-ws)/norm(ws)); %step 5
     
     %algorithm has some issues, so here I will calculate the neighbours of
     %s
