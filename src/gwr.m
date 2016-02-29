@@ -160,8 +160,9 @@ for k = 1:datasetsize %step 1
     %[C, A, C_age, h, r ] = removenode(C, A, C_age, h, r); 
     %check for old edges
     [C, C_age ] = removeedge(C, C_age);  
-    [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
-    
+    if r>2
+        [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
+    end
     activations = [activations a];
     %to make it look nice...
     if PLOTIT
