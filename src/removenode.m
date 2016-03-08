@@ -1,14 +1,13 @@
 function [C, A, C_age, h,r ] = removenode(C, A, C_age, h,r) %depends only on C operates on everything
 
-[row,col] = find(C);
+[row,~] = find(C);
 %a = [row;col];
 maxa = max(row);
 for i = 1:maxa% r
-    [row,col] = find(C);
     if max(row)<maxa %ok, lets try this, if the old maximum is not valid anymore stop the for loop.
         break % I am assuming that this also means that all of the remaining rows and columns are zeroed
     end
-    if isempty(find(row == i))
+    if isempty(find(row == i, 1))
         
         %has to do this to every matrix and vector
         C = clipsimmat(C,i);
@@ -22,6 +21,7 @@ for i = 1:maxa% r
         if r<1||r~=fix(r)
             error('something fishy happening. r is either zero or fractionary!')
         end
+        [row,~] = find(C);
     end
    
 end
