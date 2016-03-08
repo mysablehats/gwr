@@ -31,7 +31,7 @@ amax = 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
 PLOTIT = false;
-DOOVER = 1; % this means data will be run over twice
+DOOVER = 3; % this means data will be run over twice
 STATIC = true;
 RANDOMSTART = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems

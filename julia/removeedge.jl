@@ -1,13 +1,9 @@
 function  removeedge(C, C_age) 
 global amax
 row, col = findnz(C_age .> amax);
+a = size(row,2);
 if !isempty(row)
-    a = size(row,2);
     for i = 1:a
-        if i>size(row,2)
-            println("oops, something wrong with removeedge, nevermind...")
-            break
-        end
         C_age[row[i],col[i]] = 0;
         C_age[col[i],row[i]] = 0;
         C[row[i],col[i]] = 0;
