@@ -8,7 +8,7 @@ for i = 1:maxa
     if isempty(row)||maximum(row)<maxa #ok, lets try this, if the old maximum is not valid anymore stop the for loop. # I needed to add the isempty(row) because julia complains about finding the maximum of an empty array. This is likely a bug I created somewhere else, but until I find it, this will remain like this.
         break # I am assuming that this also means that all of the remaining rows and columns are zeroed
     end
-    if !any(row .== i)           ################ this
+    if isempty(find(row .== i)) ################ this
         #println("removed node!")
         #has to do this to every matrix and vector
         C = clipsimmat(C,i);
@@ -22,7 +22,7 @@ for i = 1:maxa
         if r<1||r!=floor(r)
             error("something fishy happening. r is either zero or fractionary!");
         end
-        row,col = findnz(C);
+        row,col,() = findnz(C);
     end
    
 end
