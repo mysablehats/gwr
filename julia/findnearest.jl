@@ -4,11 +4,10 @@ function findnearest(p, data)
     for i = 1:maxindex
         distvector[i] = norm(data[:,i]- p);
     end
-#println(size(vec(distvector)))
     index = sortperm(vec(distvector));
     ni1 = index[1];
     ni2 = index[2];
     n1 = data[:,ni1];
-    n2 = data[:,ni2];
-   return n1, n2, ni1, ni2, distvector
+    
+   return n1, ni1, ni2
 end

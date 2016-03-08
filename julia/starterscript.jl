@@ -15,6 +15,6 @@ Data = read(file, "Data")
 # scatter(Data[1,:]',Data[2,:]', )
 
 tic()
-A,(),(),() = gwr(Data,100);
+A = gwr(Data,200);
 toc()
 scatter(A[1,:]', A[2,:]')  
