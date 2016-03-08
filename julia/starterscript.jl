@@ -2,7 +2,7 @@
 include("findnearest.jl")
 include("findneighbours.jl")
 include("removeedge.jl")
-include("removenode.jl")
+include("removenode_old.jl")
 include("gwr.jl")
 include("plotgwr.jl")
 
@@ -17,3 +17,4 @@ Data = read(file, "Data")
 tic()
 A,(),(),() = gwr(Data,100);
 toc()
+scatter(A[1,:]', A[2,:]')  

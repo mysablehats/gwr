@@ -33,6 +33,7 @@ amax = 50; #greatest allowed age
 t0 = time(); # my algorithm is not necessarily static!
 STATIC = true;
 RANDOMSTART = true;
+DOOVER = 1;	
 ################### ATTENTION STILL MISSING FIRING RATE! will have problems
 ################### when algorithm not static!!!!
 
@@ -80,8 +81,9 @@ else
 end
 OldA = A;
 # start of the loop
+for aaaaa = 1:DOOVER
 for k = 1:datasetsize #step 1
-	global A
+	#global A
         eta = data[:,k]; # this the k-th data sample
         ws, (), s, t, () = findnearest(eta, A); #step 2 and 3
     if C[s,t]==0 #step 4
@@ -94,13 +96,12 @@ for k = 1:datasetsize #step 1
     #algorithm has some issues, so here I will calculate the neighbours of
     #s
     neighbours = findneighbours(s, C);
-	#println("burro num_of_neighbours")
+
     num_of_neighbours = size(neighbours,1);
-	println(size(neighbours))    
+  
     if a < at && r <= maxnodes #step 6
         wr = 0.5*(ws+eta); #too low activity, needs to create new node r
-            A[:,r] = wr;
-	println(r)
+        A[:,r] = wr;
         C = spdi_bind(C,t,r);
         C = spdi_bind(C,s,r);
         C = spdi_del(C,s,t);
@@ -108,9 +109,8 @@ for k = 1:datasetsize #step 1
     else #step 7
         for j = 1:num_of_neighbours # check this for possible indexing errors
             i = neighbours[j];
-            #size(A)
-                wi = A[:,i];
-                A[:,i] = wi + en*h[i]*(eta-wi);
+            wi = A[:,i];
+            A[:,i] = wi + en*h[i]*(eta-wi);
         end
         A[:,s] = ws + eb*h[s]*(eta-ws); #adjusts nearest point MORE;;; also, I need to adjust this after the for loop or the for loop would reset this!!!
     end
@@ -139,26 +139,14 @@ for k = 1:datasetsize #step 1
     #[C, A, C_age, h, r ] = removenode(C, A, C_age, h, r); 
     #check for old edges
     if r>2 # don't remove everything
-        #C, C_age  = removeedge(C, C_age);  
-        #C, A, C_age, h, r  = removenode(C, A, C_age, h, r);  #inverted order as it says on the algorithm to remove points faster
+        C, C_age  = removeedge(C, C_age);  
+        C, A, C_age, h, r  = removenode(C, A, C_age, h, r);  #inverted order as it says on the algorithm to remove points faster
     end
-    activations = vcat(activations, a);
-    epoch = epoch+1;   
-    #scatter(A[1,:]',A[2,:]')
-    ##spy(A)
-#plotgwr(A,C)
-    #PyPlot.draw()
-    if k ==202
-	println("????")
-	spy(A)
-	println(r)
-	println(activations[end])
-
-    end
-    OldA = A;
+    #activations = vcat(activations, a);
+    epoch += 1;   
+    
 end
-#scatter(A[:,1], A[:,2])    
-#spy(A)
+end
 return A,C,ni1,ni2 
 end
 
