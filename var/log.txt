@@ -71,3 +71,11 @@
 [08-Mar-2016 334.000000] starterscript: gwr: Mean end activation =0.78455
 [08-Mar-2016 334.000000] starterscript: gwr: Activation end points0.72712     0.76633     0.86054     0.80958     0.77398     0.74018     0.87584     0.82625     0.67788     0.72293     0.67448     0.87033     0.72745     0.86101     0.92941     0.67791     0.96039     0.72012     0.72722     0.64994     0.76528
 [08-Mar-2016 334.000000] starterscript: gwr: Activation initial points0.0094077    0.083031     0.12504    0.048134     0.48609    0.051909    0.026279    0.049762     0.59236      0.1332     0.12581     0.12739     0.38799     0.65838    0.018006     0.32609     0.28954     0.62978     0.31513     0.94323
+[08-Mar-2016 341.490000] starterscript: gwr: generates GWR A and C matrices
+[08-Mar-2016 341.500000] starterscript: gwr: Executing GWR with:100 nodes.
+[08-Mar-2016 341.500000] starterscript: gwr: Executing with random nodes.
+[08-Mar-2016 341.500000] starterscript: gwr: Algorithm set as STATIC
+[08-Mar-2016 341.510000] starterscript: gwr: Initial parametersn1 =1266 n2 =2747
+[08-Mar-2016 343.060000] starterscript: gwr: Mean end activation =0.75604
+[08-Mar-2016 343.070000] starterscript: gwr: Activation end points0.82305     0.84977     0.94847     0.82614     0.88151      0.6269     0.87222      0.6863     0.62711     0.59474     0.59049     0.70834     0.73654     0.84874     0.95172      0.6327     0.95237     0.63806     0.81968     0.64657     0.86365
+[08-Mar-2016 343.070000] starterscript: gwr: Activation initial points0.0083718   0.0041036     0.53935     0.09409   0.0033853    0.015962    0.030324     0.32634     0.46915     0.87785     0.34515    0.027693     0.58901     0.45251   0.0096048     0.57404      0.1083     0.58111     0.47118     0.64753

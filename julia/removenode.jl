@@ -30,39 +30,42 @@ return C, A, C_age, h,r
 
 end
 
-
 function clipsimmat(C,i)
-if i>size(C,2)
-   error("out of bounds")
-end
-
-C = C[:, 1:size(C,2) .!= i];
-C = C[1:size(C,1) .!= i,:];
-ZORE = zeros(size(C,1),1);
-C = [C ZORE]; 
-ZERO = zeros(1,size(C,2));
-C = [C;ZERO];
-return C
+    a = size(C,2);
+    if i>a
+        error("out of bounds")
+    end
+    if i==1
+        C[1:end-1,1:end-1] = C[2:end,2:end];
+    else
+        C[1:i-1,i:end-1] = C[1:i-1,i+1:end];
+        C[i:end-1,1:i-1] = C[i+1:end,1:i-1];
+        C[i:end-1,i:end-1] = C[i+1:end,i+1:end]; #this part has to be moved last or it will overwrite the matrix
+    end
+    C[:,end] = zeros(a,1);
+    C[end,:] = zeros(1,a);
+    return C
 end
 
 function clipvect(V, i)
-if i>size(V,2)
-   error("out of bounds")
-end
-
-V = V[:,1:size(V,2) .!= i];
-V = [V 0];
+    a = size(V,2);
+    if i>a
+       error("out of bounds")
+    end
+    V[i:end-1] = V[i+1:end];
+    V[end] = 0;
 return V
 end
 
 function clipA(A, i)
-if i>size(A,2)
-   error("out of bounds")
+    a = size(A,2);
+    b = size(A,1);
+    if i>a
+        error("out of bounds")
+    end
+    if i != a 
+        A[:,i:end-1] = A[:,i+1:end];
+    end
+    A[:,end] = zeros(b,1);
+    return A
 end
-A = A[:,1:size(A,2) .!= i];
-ZERO = zeros(size(A,1),1);
-A = [A ZERO];
-return A
-end
-
-

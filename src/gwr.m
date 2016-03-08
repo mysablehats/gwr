@@ -31,32 +31,12 @@ amax = 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
 PLOTIT = false;
-DOOVER = 3; % this means data will be run over twice
+DOOVER = 1; % this means data will be run over twice
 STATIC = true;
 RANDOMSTART = true;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
-
-%%%%%%%%%%MESSAGES PART%%%%%%%%%%%%%%%%%%%%%%%%%%
-dbgmsg('generates GWR A and C matrices',true)
-dbgmsg('Executing GWR with: ', num2str(MAXNUMBEROFNODES),' nodes.',true)
-if PLOTIT 
-    dbgmsg('WARNING: Plot ON, this is very slow',true)
-end
-if RANDOMSTART
-    dbgmsg('Executing with random nodes.',true)
-end
-if STATIC
-    dbgmsg('Algorithm set as STATIC',true)
-else
-    dbgmsg('WARNING: Algorithm set as NOT - STATIC',true)
-end
-if DOOVER ~= 1
-    dbgmsg('WARNING:DOVER parameter set to',' ', num2str(DOOVER),'. Will go over whole dataset',' ', num2str(DOOVER),' times.',true)
-end
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 %test some algorithm conditions:
 if ~(0 < en || en < eb || eb < 1)
@@ -72,7 +52,6 @@ if RANDOMSTART
     ni2 = n(2);
 end
 n1 = data(:,ni1); n2 = data(:,ni2);
-dbgmsg('Initial parameters ','n1 =  ',num2str(ni1),' n2 =  ',num2str(ni2),true)
 
 A = zeros(size(n1,1),maxnodes);
 A(:,[1 2]) = [n1, n2];
@@ -87,10 +66,6 @@ r = 3; %the first point to be added is the point 3 because we already have n1 an
 h = zeros(1,maxnodes);%firing counter matrix
 datasetsize = size(data,2);
 
-%some variables to display the graphs
-activations = [];
-nodecount = [];
-epoch = 1;
 
 %%% SPEEDUP CHANGE
 if STATIC
@@ -163,40 +138,12 @@ for k = 1:datasetsize %step 1
         [C, C_age ] = removeedge(C, C_age);  
         [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     end
-    activations = [activations a];
+    
     %to make it look nice...
-    if PLOTIT
-        
-        nodecount = [nodecount r];
-        subplot(2,2,[1 3]) 
+    
+end
+end
 
-        plotgwr(A, C)
-        title('GWR')   
-        subplot(2,2,2)
-        plot(1:epoch,nodecount)
-        title('Num of nodes')
-        subplot(2,2,4)
-        if length(activations)>200 & mean(activations(end-40:end))> 0.7
-            plot((epoch-200):epoch, activations(end-200:end))
-        else
-            semilogy(1:epoch,activations)
-        end
-        title(strcat('Activation Mean: (', num2str(round(mean(activations),3, 'significant')),')'))
-        drawnow
-    end
-    epoch = epoch+1;   
-    %progress(epoch,1,datasetsize*DOOVER)
-end
-end
-if length(activations)>40
-    dbgmsg('Mean end activation = ',num2str(mean(activations(end-40:end))),1)
-    dbgmsg('Activation end points ',num2str((activations(end-20:end))),1)
-    dbgmsg('Activation initial points',num2str(activations(1:20)),1)
-else
-    dbgmsg('Mean activation = ',num2str(mean(activations)),1)
-    dbgmsg('Activation end points ',num2str((activations(end:1))),1)
-    dbgmsg('Activation initial points',num2str(activations),1)
-end
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
 sparsemat(a,b) = sparsemat(a,b) + 1; 
