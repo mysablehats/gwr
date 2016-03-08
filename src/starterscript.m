@@ -2,5 +2,6 @@
 load('../share/local_uniform_2d.mat')
 %pkg load image %statistics
 tic
-gwr(Data,100)
+A = gwr(Data,100);
 toc
+scatter(A(1,:)', A(2,:)')
