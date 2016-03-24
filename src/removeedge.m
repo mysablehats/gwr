@@ -1,5 +1,4 @@
-function [C, C_age ] = removeedge(C, C_age) 
-global amax
+function [C, C_age ] = removeedge(C, C_age, amax) 
 [row, col] = find(C_age > amax);
 a = size(row,2);
 if ~isempty(row)

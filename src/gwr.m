@@ -1,4 +1,4 @@
-function [A,C,ni1,ni2] = gwr(data,MAXNUMBEROFNODES)
+function [A,C,ni1,ni2] = gwr(data,params)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -14,26 +14,20 @@ function [A,C,ni1,ni2] = gwr(data,MAXNUMBEROFNODES)
 % something that yields a constant value
 
 %the initial parameters for the algorithm:
-global maxnodes at en eb h0 ab an tb tn amax
+%global maxnodes at en eb h0 ab an tb tn amax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-maxnodes = MAXNUMBEROFNODES; %maximum number of nodes/neurons in the gas
-at = 0.95; %activity threshold
-en = 0.006; %epsilon subscript n
-eb = 0.2; %epsilon subscript b
-h0 = 1;
-ab = 0.95;
-an = 0.95;
-tb = 3.33;
-tn = 3.33;
-amax = 50; %greatest allowed age
+maxnodes = params.nodes; %maximum number of nodes/neurons in the gas
+at = params.at;%0.95; %activity threshold
+en = params.en;%= 0.006; %epsilon subscript n
+eb = params.eb;%= 0.2; %epsilon subscript b
+amax = params.amax;%= 50; %greatest allowed age
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t0 = cputime; % my algorithm is not necessarily static!
-PLOTIT = false;
-DOOVER = 1; % this means data will be run over twice
-STATIC = true;
-RANDOMSTART = true;
+STATIC = params.STATIC;
+RANDOMSTART = params.RANDOMSTART;
+MAX_EPOCHS = params.MAX_EPOCHS;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -69,14 +63,14 @@ datasetsize = size(data,2);
 
 %%% SPEEDUP CHANGE
 if STATIC
-    hizero = hi(0)*ones(1,maxnodes);
-    hszero = hs(0);
+    hizero = hi(0,params)*ones(1,maxnodes);
+    hszero = hs(0,params);
 else
     time = 0;
 end
 
 % crazy idea: go through the dataset twice... it makes it a lot better
-for aaaaaaaaa = 1:DOOVER
+for num_of_epochs = 1:MAX_EPOCHS
 
 % start of the loop
 for k = 1:datasetsize %step 1
@@ -125,9 +119,9 @@ for k = 1:datasetsize %step 1
         h(s) = hszero;
     else
         for i = 1:r %%% since this value is the same for all I can compute it once and then make all the array have the same value...
-            h(i) = hi(time); %ok, is this sloppy or what? t for the second nearest point and t for time
+            h(i) = hi(time,params); %ok, is this sloppy or what? t for the second nearest point and t for time
         end
-        h(s) = hs(time);
+        h(s) = hs(time,params);
         time = (cputime - t0)*1; 
     end    
    
@@ -135,7 +129,7 @@ for k = 1:datasetsize %step 1
     %[C, A, C_age, h, r ] = removenode(C, A, C_age, h, r); 
     %check for old edges
     if r>2 % don't remove everything
-        [C, C_age ] = removeedge(C, C_age);  
+        [C, C_age ] = removeedge(C, C_age, amax);  
         [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
     end
     
@@ -166,12 +160,16 @@ end
 function X = S(t)
     X = 1;
 end
-function X = hs(t)
-global h0 ab tb 
+function X = hs(t,params)
+h0 = params.h0;%= 1;
+ab = params.ab;%= 0.95;
+tb = params.tb;%= 3.33;
 X = h0 - S(t)/ab*(1-exp(-ab*t/tb));
 end
-function X = hi(t)
-global h0 an tn 
+function X = hi(t,params)
+h0 = params.h0;%= 1;
+an = params.an;%= 0.95;
+tn = params.tn;%= 3.33;
 X = h0 - S(t)/an*(1-exp(-an*t/tn));
 end
 
