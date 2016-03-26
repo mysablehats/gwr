@@ -48,7 +48,18 @@ elseif isfield(params,'startingpoint')&&~isempty('params.startingpoint')
     ni1 = params.startingpoint(1);
     ni2 = params.startingpoint(2);
 end
-n1 = data(:,ni1); n2 = data(:,ni2);
+if ni1> size(data,2)
+    dbgmsg('n1 overflow. using last data point',num2str(ni1),1)
+    n1 = data(:,end);
+else
+    n1 = data(:,ni1);
+end
+if ni2> size(data,2)
+    dbgmsg('n2 overflow. using last data point',num2str(ni2),1)
+    n2 = data(:,end);
+else
+    n2 = data(:,ni2);
+end
 
 A = zeros(size(n1,1),maxnodes);
 A(:,[1 2]) = [n1, n2];
