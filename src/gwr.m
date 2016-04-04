@@ -28,6 +28,7 @@ t0 = cputime; % my algorithm is not necessarily static!
 STATIC = params.STATIC;
 RANDOMSTART = params.RANDOMSTART;
 MAX_EPOCHS = params.MAX_EPOCHS;
+PLOTIT = params.PLOTIT;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -148,6 +149,10 @@ for k = 1:datasetsize %step 1
     end
     
     %to make it look nice...
+    if PLOTIT&&mod(k,200)==0
+        plotgwr(A,C)
+        drawnow
+    end
     
 end
 end
