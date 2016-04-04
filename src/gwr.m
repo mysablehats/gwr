@@ -37,6 +37,9 @@ PLOTIT = params.PLOTIT;
 if ~(0 < en || en < eb || eb < 1)
     error('en and/or eb definitions are wrong. They are as: 0<en<eb<1.')
 end
+if PLOTIT
+    plotgwr() % clears plot variables
+end
 % (1)
 % pick n1 and n2 from data
 ni1 = 1; 
@@ -84,11 +87,13 @@ else
     time = 0;
 end
 
+therealk = 0; %% a real counter for epochs
 % crazy idea: go through the dataset twice... it makes it a lot better
 for num_of_epochs = 1:MAX_EPOCHS
 
 % start of the loop
 for k = 1:datasetsize %step 1
+    therealk = therealk +1;
     eta = data(:,k); % this the k-th data sample
     [ws, ~, s, t, ~] = findnearest(eta, A); %step 2 and 3
     if C(s,t)==0 %step 4
@@ -150,7 +155,7 @@ for k = 1:datasetsize %step 1
     
     %to make it look nice...
     if PLOTIT&&mod(k,200)==0
-        plotgwr(A,C)
+        plotgwr(A,C,a,therealk,r)
         drawnow
     end
     
