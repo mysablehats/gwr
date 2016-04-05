@@ -1,4 +1,4 @@
-function [A,C,ni1,ni2] = gwr(data,params)
+function [A,C,outparams] = gwr(data,params)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -168,6 +168,10 @@ for k = 1:datasetsize %step 1
     
 end
 end
+outparams.graph.errorvect = errorvect;
+outparams.graph.epochvect = epochvect;
+outparams.graph.nodesvect = nodesvect;
+outparams.initialnodes = [ni1,ni2];
 
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
