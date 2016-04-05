@@ -172,7 +172,6 @@ outparams.graph.errorvect = errorvect;
 outparams.graph.epochvect = epochvect;
 outparams.graph.nodesvect = nodesvect;
 outparams.initialnodes = [ni1,ni2];
-
 end
 function sparsemat = spdi_add(sparsemat, a, b) %increases the number so that I don't have to type this all the time and forget it...
 sparsemat(a,b) = sparsemat(a,b) + 1; 
