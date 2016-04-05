@@ -88,8 +88,12 @@ else
 end
 
 therealk = 0; %% a real counter for epochs
-% crazy idea: go through the dataset twice... it makes it a lot better
-for num_of_epochs = 1:MAX_EPOCHS
+
+errorvect = nan(1,MAX_EPOCHS*datasetsize);
+epochvect = nan(1,MAX_EPOCHS*datasetsize);
+nodesvect = nan(1,MAX_EPOCHS*datasetsize);
+
+for num_of_epochs = 1:MAX_EPOCHS % strange idea: go through the dataset more times - actually this makes it overfit the data, but, still it is interesting.
 
 % start of the loop
 for k = 1:datasetsize %step 1
@@ -154,8 +158,11 @@ for k = 1:datasetsize %step 1
     end
     
     %to make it look nice...
+    errorvect(therealk) = a;
+    epochvect(therealk) = therealk;
+    nodesvect(therealk) = r;
     if PLOTIT&&mod(k,200)==0
-        plotgwr(A,C,a,therealk,r)
+        plotgwr(A,C,errorvect,epochvect,nodesvect)
         drawnow
     end
     

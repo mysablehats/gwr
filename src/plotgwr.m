@@ -3,23 +3,21 @@ function plotgwr(varargin)
 %%%%%%%%%%MESSAGES PART
 %dbgmsg('Plots gwr (or gng as well). Either in 2 or 3 dimensions. Handles 75 dimension and 72 dimension skeletons gracefully')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-persistent hdl_main hdl_error hdl_nodes epoch_vect error_vect nodes
+persistent hdl_main hdl_main_p hdl_error hdl_nodes axmain axmaincopy
 if nargin == 0
     clear all
     return
 else
-    [A,C, error_val, Epoch, currnodes] = varargin{:};
+    [A,C, error_vect, epoch_vect, nodes] = varargin{:};
 end
 
-epoch_vect = [epoch_vect Epoch];
-error_vect = [error_vect error_val]; 
-nodes = [nodes, currnodes];
+% epoch_vect = [epoch_vect Epoch];
+% error_vect = [error_vect error_val]; 
+% nodes = [nodes, currnodes];
 
 if isempty(hdl_main)||isempty(hdl_error)||isempty(hdl_nodes) % initialize the plot window
-    subplot(1,2,1)
-
-
-%     plotgwr(A,C)
+    axmain = subplot(1,2,1);
+    axmaincopy = axes('position', get(axmain, 'position'));
 end
 %%%%%%%%%%%%%hack to plot 147 dimension vector. I will just discard
 %%%%%%%%%%%%%velocity information
@@ -41,9 +39,12 @@ if size(A,1)>=3&&size(A,1)<75&&size(A,1)~=72
     bz = A(3,col);
     Z = reshape([az;bz;NaN*ones(size(ax))],size(ax,2)*3,1)';
     if isempty(hdl_main)
-        hdl_main = plot3(X,Y,Z, 'b');
+        hdl_main = plot3(axmain,X,Y,Z, 'b');
+        hdl_main_p = plot3(axmaincopy,A(1,:),A(2,:),A(3,:), '.r');
+        set(axmaincopy, 'Color', 'none');
     else
         set(hdl_main, 'XData',X,'YData',Y,'ZData', Z)
+        set(hdl_main_p, 'XData',A(1,:),'YData', A(2,:),'ZData', A(3,:))
     end
 elseif size(A,1) == 75||size(A,1) == 72
     if size(A,1) == 72
@@ -88,32 +89,38 @@ elseif size(A,1) == 75||size(A,1) == 72
     T = [SK moresticks];
     
     if isempty(hdl_main)
-       hdl_main = plot3(T(1,:),T(2,:),T(3,:));
+       hdl_main = plot3(axmain,T(1,:),T(2,:),T(3,:));
+       hdl_main_p = plot3(axmaincopy,A(1,:),A(2,:),A(3,:), '.r');
+       set(axmaincopy, 'Color', 'none');
     else
         set(hdl_main, 'XData',T(1,:),'YData',T(2,:),'ZData',T(3,:));
+        set(hdl_main_p, 'XData',A(1,:),'YData',A(2,:),'ZData',A(3,:));
     end    
     
 else
     if isempty(hdl_main)
-        hdl_main = plot(X,Y, 'b');
+        hdl_main = plot(axmain,X,Y, 'b');
+        hdl_main_p = plot(axmaincopy,A(1,:),A(2,:), '.r');
+        set(axmaincopy, 'Color', 'none');
     else
         set(hdl_main, 'XData',X,'YData',Y);
+        set(hdl_main_p, 'XData',A(1,:),'YData',A(2,:));
     end
 end
 set(gca,'box','off')
 %%% Now I will plot the error
-subplot(2,2,2);
+axerror = subplot(2,2,2);
 if ~isempty(hdl_error)
     set(hdl_error, 'XData',epoch_vect,'YData',error_vect);  
 else
     title('Activity or RMS error')
-    hdl_error = plot(epoch_vect, error_vect);
+    hdl_error = plot(axerror, epoch_vect, error_vect);
 end
-subplot(2,2,4);
+axnodes = subplot(2,2,4);
 if ~isempty(hdl_nodes)
     set(hdl_nodes, 'XData',epoch_vect,'YData',nodes);
 else
-    hdl_nodes = plot(epoch_vect, nodes);
+    hdl_nodes = plot(axnodes, epoch_vect, nodes);
     title('Number of Nodes')
 end
 

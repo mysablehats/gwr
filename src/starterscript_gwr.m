@@ -36,5 +36,9 @@ params.d                           = .99;   % Error reduction factor.
 
 tic
 A = gwr(Data,params);
+subplot(1,2,1);
+hold on
+plot(Data(1,:),Data(2,:), '.g', A(1,:)', A(2,:)', '.r')
+
 toc
 %scatter(A(1,:)', A(2,:)')
