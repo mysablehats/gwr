@@ -7,13 +7,13 @@ if nargin == 0
     clear all
     return
 else
-    [A,C, error_vect, epoch_vect, nodes] = varargin{:};
+    [A,C, error_vect, epoch_vect, nodes, skelldef, layertype] = varargin{:};
 end
 
 %%%%%%%%%%%%%hack to plot 147 dimension vector. I will just discard
 %%%%%%%%%%%%%velocity information
-if size(A,1) == 147 || size(A,1) == 150
-    A = rebuild(A);
+if size(A,1) >50 % == 147 || size(A,1) == 150
+    A = rebuild(A,skelldef,layertype);
 end
 
 [row,col] = find(C);
@@ -73,25 +73,81 @@ elseif size(A,1) == 75||size(A,1) == 72
     end
     T = [SK moresticks];
     
-    theactualplot(A, error_vect, epoch_vect, nodes, T(1,:),T(2,:),T(3,:))
+    % make A into a sequence of 3d points
+    A = threedeeA(A);
+    theactualplot(A', error_vect, epoch_vect, nodes, T(1,:),T(2,:),T(3,:))
        
 else
     theactualplot(A, error_vect, epoch_vect, nodes, X, Y)
  
 end
 end
-function A = rebuild(A) %it should work with all the Nx3 stuff I have, but who knows...
+function AA = rebuild(A, skelldef, layertype) %it should work with all the Nx3 stuff I have, but who knows...
 a = size(A,1)/3;
 c = size(A,2);
- 
-B = reshape(A,a,3,c); %%%after I will have to put it back as a normal skeleton
 
-if a == 49
-    A = B(1:24,:,:);
-    A = reshape(A,72,c);
-else
-    error('not implemented for this size')
+switch layertype
+    case 'pos'
+        assumed_q = a/(size(skelldef.pos,2)/3);
+    case 'vel'
+        assumed_q = a/(size(skelldef.vel,2)/3);
+    case 'all'
+         if a > 25&&((size(skelldef.elementorder,2))<=a) % maybe this is useless
+             assumed_q = a/size(skelldef.elementorder,2)*3;
+         else
+             assumed_q = 1;
+             disp('Warning. Unexpected condition while reshaping skeletons.')
+         end
 end
+
+B = reshape(A,ceil(a/assumed_q),3,[]); %%%after I will have to put it back as a normal skeleton
+%needtoputback = reshape(skelldef.realkilldim,[],3);
+if a == 49
+    %this was apparently working, so I will not change
+    
+    A = B(1:24,:,:);
+    AA = reshape(A,72,c);
+    return
+else    
+    %knowing q would help, but I don't need it. 
+    
+    AA = zeros(skelldef.length/6,3,c*assumed_q) ;%this is wrong and it will break. I need in the skeldef a variable telling me how many points are there in my skeleton originally (either 25 or 20)
+    switch layertype
+        case 'pos'
+            AA(skelldef.elementorder(1:a/assumed_q),:,:) = B;
+            AA = reshape(AA,skelldef.length/2,c*assumed_q);
+            return
+        case 'vel'
+             ini = size(skelldef.pos,2)/3+1;
+             een = size(skelldef.vel,2)/3+ini-1;
+             AA(skelldef.elementorder(ini:een)-skelldef.length/6,:,:) = B;
+             AA = reshape(AA,skelldef.length/2,c*assumed_q);
+            %AA = B;
+         case 'all'
+            a = size(skelldef.pos,2);
+            AA(skelldef.elementorder(1:a/assumed_q),:,:) = B(1:a/assumed_q,:,:);
+            %BB = AA(1:skelldef.length/6,:,:);
+            AA = reshape(AA,[],c*assumed_q);
+            %%% Wait, no double work, let us be smart about this// ok,
+            %%% being smart is not so smart, because separating the data is
+            %%% a hassle... this is also probably why the thing on top is
+            %%% not working
+            %             VEL_ini = size(skelldef.pos,2)/3+1;
+            %             VEL_een = size(skelldef.vel,2)/3+VEL_ini-1;
+            %
+            %             fatA = makefatskel(A);
+            %             serialfatA = makeserial(fatA, skeldef);
+            %             posA = serialfatA(1:VEL_ini-1,:
+            %             A_pos = rebuild(A, skelldef, 'pos');
+            %             A_vel = rebuild(A, skelldef, 'vel');
+            
+        otherwise
+            
+            error('unknown layer type.')
+    end
+    disp('Strange skelleton definition... hope I work for this size')
+end
+
  
 end
 function theactualplot(A, error_vect, epoch_vect, nodes, varargin)
@@ -146,6 +202,15 @@ if ~isempty(hdl_nodes)
 else
     hdl_nodes = plot(axnodes, epoch_vect, nodes);
     title('Number of Nodes')
+end
+
+end
+function B = threedeeA(A)
+
+C = makefatskel(A);
+B = [];
+for i = 1:size(C,3)
+    B = cat(1, C(:,:,i), B);
 end
 
 end
