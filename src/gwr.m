@@ -29,6 +29,8 @@ STATIC = params.STATIC;
 RANDOMSTART = params.RANDOMSTART;
 MAX_EPOCHS = params.MAX_EPOCHS;
 PLOTIT = params.PLOTIT;
+skelldef = params.skelldef;
+layertype = params.layertype;
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -152,17 +154,26 @@ for k = 1:datasetsize %step 1
     %step 10: check if a node has no edges and delete them
     %[C, A, C_age, h, r ] = removenode(C, A, C_age, h, r); 
     %check for old edges
+    
+    % makes the algorithm slightly faster when the matrices are not full
+    if r > maxnodes
+        R = maxnodes;
+    else
+        R = r;
+    end
+    
     if r>2 % don't remove everything
-        [C, C_age ] = removeedge(C, C_age, amax);  
-        [C, A, C_age, h, r ] = removenode(C, A, C_age, h, r);  %inverted order as it says on the algorithm to remove points faster
+        
+        [C(1:R,1:R), C_age(1:R,1:R) ] = removeedge(C(1:R,1:R), C_age(1:R,1:R), amax);  
+        [C(1:R,1:R), A(:,1:R), C_age(1:R,1:R), h, r ] = removenode(C(1:R,1:R), A(:,1:R), C_age(1:R,1:R), h, r);  %inverted order as it says on the algorithm to remove points faster
     end
     
     %to make it look nice...
     errorvect(therealk) = a;
     epochvect(therealk) = therealk;
     nodesvect(therealk) = r;
-    if PLOTIT&&mod(k,200)==0
-        plotgwr(A,C,errorvect,epochvect,nodesvect)
+    if PLOTIT&&mod(k,1000)==0
+        plotgwr(A,C,errorvect,epochvect,nodesvect, skelldef, layertype)
         drawnow
     end
     
