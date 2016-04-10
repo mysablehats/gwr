@@ -1,4 +1,11 @@
-function [A,C,outparams] = gwr(data,params)
+function [A,C,outparams] = gwr(data,somestruc)
+if isfield(somestruc, 'amax')
+    params = somestruc;
+    canawk = false;
+elseif isfield(somestruc, 'params')
+    params = somestruc.params;
+    canawk = true;
+end  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -31,6 +38,15 @@ MAX_EPOCHS = params.MAX_EPOCHS;
 PLOTIT = params.PLOTIT;
 skelldef = params.skelldef;
 layertype = params.layertype;
+%%%%%% NEW ADDITION: the adjusting weighting constant parameter
+%%%% this is not so simple because the input vectors 
+if canawk
+    %%% setting awk based on which layer I am in
+    %%% inputlayers, q(1) and layertype influence awk :'( 
+    awk = makeawk(somestruc);
+else
+    awk = ones(size(data,1),1);
+end
 %%%%%%%%%%%%%%%%%%% ATTENTION STILL MISSING FIRING RATE! will have problems
 %%%%%%%%%%%%%%%%%%% when algorithm not static!!!!
 %%%%%%%%%%%%%%%%%%% 
@@ -107,7 +123,7 @@ for k = 1:datasetsize %step 1
     else
         C_age = spdi_del(C_age,s,t);
     end
-    a = exp(-norm(eta-ws)); %step 5
+    a = exp(-norm((eta-ws).*awk)); %step 5
     
     %algorithm has some issues, so here I will calculate the neighbours of
     %s
