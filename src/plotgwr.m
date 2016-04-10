@@ -145,7 +145,7 @@ else
             
             error('unknown layer type.')
     end
-    disp('Strange skelleton definition... hope I work for this size')
+    %disp('Strange skelleton definition... hope I work for this size')
 end
 
  
