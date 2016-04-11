@@ -1,11 +1,4 @@
-function [A,C,outparams] = gwr(data,somestruc)
-if isfield(somestruc, 'amax')
-    params = somestruc;
-    canawk = false;
-elseif isfield(somestruc, 'params')
-    params = somestruc.params;
-    canawk = true;
-end  
+function [A,C,outparams] = gwr(data,params)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cf parisi, 2015 and cf marsland, 2002
 %based on the GNG algorithm from the guy that did the GNG algorithm for
@@ -40,10 +33,21 @@ skelldef = params.skelldef;
 layertype = params.layertype;
 %%%%%% NEW ADDITION: the adjusting weighting constant parameter
 %%%% this is not so simple because the input vectors 
-if canawk
+if isfield(params.skelldef, 'awk')
     %%% setting awk based on which layer I am in
     %%% inputlayers, q(1) and layertype influence awk :'( 
-    awk = makeawk(somestruc);
+    switch layertype
+        case 'pos'
+            awk = repmat(params.skelldef.awk.pos,1,params.q(1));
+        case 'vel'
+            awk = repmat(params.skelldef.awk.vel,1,params.q(1));
+    end
+    try
+        data(:,1).*awk;
+    catch
+        dbgmsg('Tried to use your awk definition, but I failed.',1)
+        awk = ones(size(data,1),1);
+    end
 else
     awk = ones(size(data,1),1);
 end
